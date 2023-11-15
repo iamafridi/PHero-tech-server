@@ -28,6 +28,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
 
     const productsCollection = client.db("productDB").collection("products");
+    const userCollection = client.db("productDB").collection("user");
 
     // Sending to server
     // Getting Data
@@ -78,9 +79,36 @@ async function run() {
           rating: updateProduct.rating,
         },
       };
-      const result= await productsCollection.updateOne(filter,product,options);
+      const result = await productsCollection.updateOne(
+        filter,
+        product,
+        options
+      );
       res.send(result);
     });
+
+    // USer Realated API
+    app.post("/user", async (req, res) => {
+      const user = req.body;
+      console.log(user);
+      const result = await userCollection.insertOne(user);
+      res.send(result);
+    });
+
+    // reating data
+    app.get("/user",async(req,res)=>{
+        const cursor = userCollection.find();
+        const users = await cursor.toArray();
+        res.send(users);
+    })
+
+    // Deleting
+    app.delete("/user/:id",async(req,res)=>{
+        const id = req.params.id;
+        const query= {_id: new ObjectId(id)};
+        const result = await userCollection.deleteOne(query);
+        res.send(result);
+    })
 
     // sending to server ends here
 
