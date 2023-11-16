@@ -110,6 +110,19 @@ async function run() {
         res.send(result);
     })
 
+    // Patching 
+    app.patch("/user",async (req,res)=>{
+        const user = req.body;
+        const filter = {email: user.email}
+        const updateDoc ={
+            $set:{
+                lastLoggedAt : user.lastLoggedAt
+            }
+        }
+        const result= await userCollection.updateOne(filter,updateDoc)
+        res.send(result)
+    })
+
     // sending to server ends here
 
     // Send a ping to confirm a successful connection
